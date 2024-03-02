@@ -1,1 +1,42 @@
 /* You can add global styles to this file, and also import other style files */
+@use 'reset.scss' as *;
+
+html {
+	font-size: 16px;
+	font-family: system-ui, sans-serif;
+}
+
+
+dialog {
+	&[open] {
+		display: flex;
+		flex-flow: column;
+		border: 4px solid gray;
+		box-shadow: 7px 7px 15px #bbcfda, -4px -4px 13px #fff, inset 4px 4px 8px rgba(209, 217, 230, 0.2), inset -8px -8px 8px rgba(255, 255, 255, 0.2);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		background: #e8eff5;
+
+		small {
+			color: gray;
+			font-size: .5remrem;
+		}
+
+		button {
+			margin-top: 2rem;
+
+			display: inline-block;
+			outline: 0;
+			border: 0;
+			cursor: pointer;
+			background-color: #4299e1;
+			border-radius: 4px;
+			padding: 8px 16px;
+			font-size: 16px;
+			font-weight: 700;
+			color: white;
+			line-height: 26px;
+
+		}
+
+	}
+}
