@@ -27,7 +27,8 @@
 				<img [src]="imageSrc" alt="image preview">
 				}
 
-				@if(activeMethod() === 'check') {
+				@defer(when activeMethod() === 'check') {
+				<!-- @if(activeMethod() === 'check') { -->
 
 				<div>
 					<label for="routingNumber">Routing Number</label>
@@ -67,8 +68,8 @@
 				</div>
 				}
 
-
-				@if(activeMethod() === 'debit') {
+				@defer(when activeMethod() === 'debit') {
+				<!-- @if(activeMethod() === 'debit') { -->
 				<div>
 					<label for="cardNumber">Card Number</label>
 					<input [attr.aria-invalid]="form.get('cardNumber')?.invalid && form.get('cardNumber')?.touched ? true : null"
