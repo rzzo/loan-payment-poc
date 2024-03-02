@@ -1,0 +1,31 @@
+.tabs {
+	overflow: hidden;
+	background-color: #f1f1f1;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+.tab {
+	background-color: inherit;
+	float: left;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	padding: 14px 16px;
+	transition: background-color 0.3s;
+}
+
+.tab:hover {
+	background-color: #ddd;
+}
+
+.active,
+.tab.active {
+	background-color: #ccc;
+}
+
+.tab-content {
+	padding: 20px;
+	border: 1px solid #ccc;
+	border-top: none;
+}
