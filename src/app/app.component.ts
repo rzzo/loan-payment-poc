@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
 	ngOnInit(): void {
 		this.form = new FormGroup({
 			loanAccountNumber: new FormControl('', [Validators.required, numbersOnlyValidator])
-		});
+		}, { validators: accountNumberMatchValidator });
 
 		// this.form = new FormGroup({
 		// 	loanAccountNumber: new FormControl('', [Validators.required, numbersOnlyValidator]),
@@ -134,14 +134,14 @@ export class AppComponent implements OnInit {
 
 		// Check which payment method is selected and add relevant form controls
 		if (paymentMethod === 'check') {
-			this.form.addControl('routingNumber', new FormControl('', [Validators.required, Validators.pattern(/^\d{9}$/)]));
-			this.form.addControl('accountNumber', new FormControl('', [Validators.required, Validators.pattern(/^\d{8,12}$/)]));
-			this.form.addControl('confirmAccountNumber', new FormControl('', [Validators.required]));
+			this.form.addControl('routingNumber', new FormControl('', [Validators.required, numbersOnlyValidator]));
+			this.form.addControl('accountNumber', new FormControl('', [Validators.required, numbersOnlyValidator]));
+			this.form.addControl('confirmAccountNumber', new FormControl('', [Validators.required, numbersOnlyValidator]));
 			this.form.setValidators(accountNumberMatchValidator);
 		} else if (paymentMethod === 'debit') {
-			this.form.addControl('cardNumber', new FormControl('', [Validators.required, Validators.pattern(/^\d{16}$/)]));
+			this.form.addControl('cardNumber', new FormControl('', [Validators.required, numbersOnlyValidator]));
 			this.form.addControl('expirationDate', new FormControl('', [Validators.required]));
-			this.form.addControl('cvv', new FormControl('', [Validators.required, Validators.pattern(/^\d{3,4}$/)]));
+			this.form.addControl('cvv', new FormControl('', [Validators.required, numbersOnlyValidator]));
 			this.form.addControl('nameOnCard', new FormControl('', [Validators.required]));
 
 			// Reset custom validators if they were set for the check payment method
@@ -160,4 +160,10 @@ export class AppComponent implements OnInit {
 			this.fileInput.nativeElement.value = "";
 		}
 	}
+
+	shouldDisplayError(controlName: string, errorType: string): boolean {
+		const control = this.form.get(controlName);
+		return (control?.touched && control?.hasError(errorType)) ?? false;
+	}
+
 }

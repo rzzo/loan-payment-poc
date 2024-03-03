@@ -1,135 +1,136 @@
-<div class="loan-wrapper">
-	<div class="left">
-
-		<form [formGroup]="form" (ngSubmit)="onSubmit()">
-			<div class="tabs">
-				<button type="button" class="tab" [class.active]="activeMethod() === 'check'"
-					(click)="setMethod('check')">Check</button>
-				<button type="button" class="tab" [class.active]="activeMethod() === 'debit'"
-					(click)="setMethod('debit')">Debit</button>
-			</div>
-
-			<div class="tab-content">
-
-				<div>
+<div>
+	<h1>One-time Loan Payment</h1>
+	<h2>Fill out the form below to complete your payment.</h2>
+	<small>*All fields are required</small>
+	<div class="loan-wrapper">
+		<div class="left">
+			<form [formGroup]="form" (ngSubmit)="onSubmit()">
+				<div class="control cf">
 					<label for="loanAccountNumber">Loan Account Number</label>
-					<input
-						[attr.aria-invalid]="form.get('loanAccountNumber')?.invalid && form.get('loanAccountNumber')?.touched ? true : null"
-						type="text" formControlName="loanAccountNumber">
-					<div *ngIf="form.get('loanAccountNumber')?.errors?.['numbersOnly'] && form.get('loanAccountNumber')?.touched">
+					<input [attr.aria-invalid]="shouldDisplayError('loanAccountNumber', 'numbersOnly') ? true : null" type="text"
+						formControlName="loanAccountNumber">
+					<div class="invalid" *ngIf="shouldDisplayError('loanAccountNumber', 'numbersOnly')">
 						Please enter numbers only.
 					</div>
 				</div>
 
-
-				<div class="picture">
-					<input type="file" accept="image/*" (change)="onFileChanged($event)" #fileInput style="display: none;">
-
-					<button class="cam" type="button" (click)="fileInput.click()">
-						<img src="/assets/cam.svg" alt="Take a picture of your {{typeOfPicture}}">
-					</button>
-					Take a picture of your {{typeOfPicture}}
+				<div class="tabs">
+					<h2>Payment method</h2>
+					<button type="button" class="tab" [class.active]="activeMethod() === 'check'"
+						(click)="setMethod('check')">Check</button>
+					<button type="button" class="tab" [class.active]="activeMethod() === 'debit'"
+						(click)="setMethod('debit')">Debit</button>
 				</div>
 
-				@if(imageSrc) {
-				<img [src]="imageSrc" alt="image preview">
-				}
+				<div class="tab-content">
+					<div class="picture">
+						<input type="file" accept="image/*" (change)="onFileChanged($event)" #fileInput style="display: none;">
 
-				@if(activeMethod() === 'check') {
-
-				<div *ngIf="form.get('routingNumber')">
-					<label for="routingNumber">Routing Number</label>
-					<input
-						[attr.aria-invalid]="form.get('routingNumber')?.invalid && form.get('routingNumber')?.touched ? true : null"
-						type="text" formControlName="routingNumber">
-					<div *ngIf="form.get('routingNumber')?.errors?.['numbersOnly'] && form.get('routingNumber')?.touched">
-						Please enter numbers only.
+						<button class="cam" type="button" (click)="fileInput.click()">
+							<img src="/assets/cam.svg" alt="Take a picture of your {{typeOfPicture}}">
+						</button>
+						Auto fill with your {{typeOfPicture}}
 					</div>
-				</div>
+					<small>*use the included "check.jpg"</small>
 
-				<div *ngIf="form.get('accountNumber')">
-					<label for="accountNumber">Account Number</label>
-					<input
-						[attr.aria-invalid]="form.get('accountNumber')?.invalid && form.get('accountNumber')?.touched ? true : null"
-						formControlName="accountNumber">
-					<div *ngIf="form.get('accountNumber')?.errors?.['numbersOnly'] && form.get('accountNumber')?.touched">
-						Please enter numbers only.
+					@if(imageSrc) {
+					<img [src]="imageSrc" alt="image preview">
+					}
+
+					@if(activeMethod() === 'check') {
+
+					<div class="control" *ngIf="form.get('routingNumber')">
+						<label for="routingNumber">Routing Number</label>
+						<input [attr.aria-invalid]="shouldDisplayError('routingNumber', 'numbersOnly') ? true : null" type="text"
+							formControlName="routingNumber">
+						<div class="invalid" *ngIf="shouldDisplayError('routingNumber', 'numbersOnly')">
+							Please enter numbers only.
+						</div>
 					</div>
-				</div>
 
-				<div *ngIf="form.get('confirmAccountNumber')">
-					<label for="confirmAccountNumber">Confirm Account Number</label>
-					<input
-						[attr.aria-invalid]="form.get('confirmAccountNumber')?.invalid && form.get('confirmAccountNumber')?.touched ? true : null"
-						formControlName="confirmAccountNumber">
-					<div
-						*ngIf="form.get('confirmAccountNumber')?.errors?.['numbersOnly'] && form.get('confirmAccountNumber')?.touched">
-						Please enter numbers only.
+					<div class="control" *ngIf="form.get('accountNumber')">
+						<label for="accountNumber">Account Number</label>
+						<input [attr.aria-invalid]="shouldDisplayError('accountNumber', 'numbersOnly') ? true : null"
+							formControlName="accountNumber">
+						<div class="invalid" invalid *ngIf="shouldDisplayError('accountNumber', 'numbersOnly')">
+							Please enter numbers only.
+						</div>
 					</div>
-				</div>
 
-				<div
-					*ngIf="form.errors?.['accountNumberMismatch'] && form.get('confirmAccountNumber')?.touched && form.get('accountNumber')?.touched"
-					class="error">
-					Account numbers must match.
-				</div>
-				}
-
-				@defer(when activeMethod() === 'debit') {
-				@if(activeMethod() === 'debit') {
-				<div>
-					<label for="cardNumber">Card Number</label>
-					<input [attr.aria-invalid]="form.get('cardNumber')?.invalid && form.get('cardNumber')?.touched ? true : null"
-						type="text" formControlName="cardNumber">
-					<div *ngIf="form.get('cardNumber')?.errors?.['numbersOnly'] && form.get('cardNumber')?.touched">
-						Please enter numbers only.
+					<div class="control" *ngIf="form.get('confirmAccountNumber')">
+						<label for="confirmAccountNumber">Confirm Account Number</label>
+						<input
+							[attr.aria-invalid]="form.get('confirmAccountNumber')?.invalid && form.get('confirmAccountNumber')?.touched ? true : null"
+							formControlName="confirmAccountNumber">
+						<div class="invalid" *ngIf="shouldDisplayError('confirmAccountNumber', 'numbersOnly')">
+							Please enter numbers only.
+						</div>
 					</div>
-				</div>
 
-				<div>
-					<label for="nameOnCard">Name on Card</label>
-					<input [attr.aria-invalid]="form.get('nameOnCard')?.invalid && form.get('nameOnCard')?.touched ? true : null"
-						type="text" formControlName="nameOnCard">
-					<div *ngIf="form.get('nameOnCard')?.errors?.['required'] && form.get('nameOnCard')?.touched">
-						This field is required.
+					<div class="invalid"
+						*ngIf="form.errors?.['accountNumberMismatch'] && form.get('confirmAccountNumber')?.touched && form.get('accountNumber')?.touched">
+						Account numbers must match.
 					</div>
-				</div>
+					}
 
-				<div>
-					<label for="expirationDate">Expiration Date</label>
-					<input
-						[attr.aria-invalid]="form.get('expirationDate')?.invalid && form.get('expirationDate')?.touched ? true : null"
-						type="text" formControlName="expirationDate">
-					<div *ngIf="form.get('expirationDate')?.errors?.['required'] && form.get('expirationDate')?.touched">
-						This field is required.
+					@defer(when activeMethod() === 'debit') {
+					@if(activeMethod() === 'debit') {
+					<div class="control">
+						<label for="cardNumber">Card Number</label>
+						<input
+							[attr.aria-invalid]="form.get('cardNumber')?.invalid && form.get('cardNumber')?.touched ? true : null"
+							type="text" formControlName="cardNumber">
+						<div *ngIf="form.get('cardNumber')?.errors?.['numbersOnly'] && form.get('cardNumber')?.touched">
+							Please enter numbers only.
+						</div>
 					</div>
-				</div>
 
-				<div>
-					<label for="cvv">CVV</label>
-					<input [attr.aria-invalid]="form.get('cvv')?.invalid && form.get('cvv')?.touched ? true : null" type="text"
-						formControlName="cvv">
-					<div *ngIf="form.get('cvv')?.errors?.['numbersOnly'] && form.get('cvv')?.touched">
-						Please enter numbers only.
+					<div class="control">
+						<label for="nameOnCard">Name on Card</label>
+						<input
+							[attr.aria-invalid]="form.get('nameOnCard')?.invalid && form.get('nameOnCard')?.touched ? true : null"
+							type="text" formControlName="nameOnCard">
+						<div *ngIf="form.get('nameOnCard')?.errors?.['required'] && form.get('nameOnCard')?.touched">
+							This field is required.
+						</div>
 					</div>
+
+					<div class="control">
+						<label for="expirationDate">Expiration Date</label>
+						<input
+							[attr.aria-invalid]="form.get('expirationDate')?.invalid && form.get('expirationDate')?.touched ? true : null"
+							type="text" formControlName="expirationDate">
+						<div *ngIf="form.get('expirationDate')?.errors?.['required'] && form.get('expirationDate')?.touched">
+							This field is required.
+						</div>
+					</div>
+
+					<div class="control">
+						<label for="cvv">CVV</label>
+						<input [attr.aria-invalid]="form.get('cvv')?.invalid && form.get('cvv')?.touched ? true : null" type="text"
+							formControlName="cvv">
+						<div *ngIf="form.get('cvv')?.errors?.['numbersOnly'] && form.get('cvv')?.touched">
+							Please enter numbers only.
+						</div>
+					</div>
+					}
+					}
+
+					<button class="submit" type="submit">Make Payment</button>
 				</div>
-				}
-				}
 
-				<button class="submit" type="submit">Make Payment</button>
-			</div>
+			</form>
+		</div>
 
-		</form>
-	</div>
+		<div class="right">
+			@if(activeMethod() === 'check') {
+			check
+			}
 
-	<div class="right">
-		@if(activeMethod() === 'check') {
-		check
-		}
-
-		@if(activeMethod() === 'debit') {
-		debit
-		}
+			@if(activeMethod() === 'debit') {
+			debit
+			}
+		</div>
 	</div>
 </div>
 
