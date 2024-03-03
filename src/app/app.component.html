@@ -21,16 +21,23 @@
 					</div>
 				</div>
 
-				<input type="file" accept="image/*" (change)="onFileChanged($event)" #fileInput>
+
+				<div class="picture">
+					<input type="file" accept="image/*" (change)="onFileChanged($event)" #fileInput style="display: none;">
+
+					<button class="cam" type="button" (click)="fileInput.click()">
+						<img src="/assets/cam.svg" alt="Take a picture of your {{typeOfPicture}}">
+					</button>
+					Take a picture of your {{typeOfPicture}}
+				</div>
 
 				@if(imageSrc) {
 				<img [src]="imageSrc" alt="image preview">
 				}
 
-				@defer(when activeMethod() === 'check') {
-				<!-- @if(activeMethod() === 'check') { -->
+				@if(activeMethod() === 'check') {
 
-				<div>
+				<div *ngIf="form.get('routingNumber')">
 					<label for="routingNumber">Routing Number</label>
 					<input
 						[attr.aria-invalid]="form.get('routingNumber')?.invalid && form.get('routingNumber')?.touched ? true : null"
@@ -40,7 +47,7 @@
 					</div>
 				</div>
 
-				<div>
+				<div *ngIf="form.get('accountNumber')">
 					<label for="accountNumber">Account Number</label>
 					<input
 						[attr.aria-invalid]="form.get('accountNumber')?.invalid && form.get('accountNumber')?.touched ? true : null"
@@ -50,7 +57,7 @@
 					</div>
 				</div>
 
-				<div>
+				<div *ngIf="form.get('confirmAccountNumber')">
 					<label for="confirmAccountNumber">Confirm Account Number</label>
 					<input
 						[attr.aria-invalid]="form.get('confirmAccountNumber')?.invalid && form.get('confirmAccountNumber')?.touched ? true : null"
@@ -69,7 +76,7 @@
 				}
 
 				@defer(when activeMethod() === 'debit') {
-				<!-- @if(activeMethod() === 'debit') { -->
+				@if(activeMethod() === 'debit') {
 				<div>
 					<label for="cardNumber">Card Number</label>
 					<input [attr.aria-invalid]="form.get('cardNumber')?.invalid && form.get('cardNumber')?.touched ? true : null"
@@ -106,6 +113,7 @@
 						Please enter numbers only.
 					</div>
 				</div>
+				}
 				}
 
 				<button class="submit" type="submit">Make Payment</button>

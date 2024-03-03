@@ -22,8 +22,10 @@ export class AppComponent implements OnInit {
 		effect(() => {
 			this.updatePaymentMethodFields(this.activeMethod());
 			if (this.activeMethod() === 'check') {
+				this.typeOfPicture = 'Check';
 				this.reset();
 			} if (this.activeMethod() === 'debit') {
+				this.typeOfPicture = 'Debit Card';
 				this.reset();
 			}
 		});
@@ -32,6 +34,7 @@ export class AppComponent implements OnInit {
 	title = 'Loan Payment';
 	activeMethod = signal<Method>('check');
 	@ViewChild('fileInput') fileInput!: ElementRef;
+	typeOfPicture: string = 'Check';
 
 	private ocrService = inject(OcrService);
 	form!: FormGroup;
