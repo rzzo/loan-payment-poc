@@ -12,7 +12,47 @@ In alignment with discussions with the recruiters, I ventured beyond the initial
 - **OCR Automation for Form Inputs**: Utilizes [Tesseract.js](https://github.com/naptha/tesseract.js#tesseractjs) to extract payment information from images of mock checks and debit cards. This proof of concept (POC) aims to streamline data entry processes and showcase the application's potential for real-world scenarios.
 - **Angular 17.2 Integration**: Demonstrates the effective use of the latest Angular features to build dynamic, responsive web applications.
 
-## Running the Application Locally
+## Accessing the Application
+
+There are two primary ways to access and interact with the Loan Payment Application. Choose the method that best suits your needs or preferences.
+
+### Method 1: Direct Access via Netlify
+
+The application is deployed and available for immediate access through the following link:
+
+[https://om-ui-exercise.netlify.app/](https://om-ui-exercise.netlify.app/)
+
+Clicking this link will take you directly to the live version of the application hosted on Netlify, allowing you to explore its features without any setup required.
+
+### Method 2: Running Locally with `http-server`
+
+If you prefer to run the application locally, you can serve the built version using `http-server`. This method is useful for reviewing the application in a local environment or if you wish to explore the application's build files directly.
+
+1. **Ensure You Have `http-server` Installed**:
+   If you haven't installed `http-server`, you can do so globally via npm:
+
+   ```sh
+   npm install http-server -g
+   ```
+
+2. **Navigate to the Project Directory**:
+   Open a terminal, change to the project's root directory where the `dist` folder is located:
+
+   ```sh
+   cd path/to/project
+   ```
+
+3. **Serve the Application**:
+   Use `http-server` to serve the contents of the `dist` directory. Replace `[project-name]` with the name of your build directory (e.g., `dist/loan-payment`):
+
+   ```sh
+   http-server dist/[project-name]
+   ```
+
+4. **Access the Application**:
+   Open a browser and go to [http://localhost:8080/](http://localhost:8080/) (or the URL indicated in your terminal) to view the application.
+
+This setup offers flexibility in how you access the application, catering to both immediate online review and local exploration.
 
 To get the application up and running on your local machine, you have two primary methods. Choose the one that best suits your development environment and preferences.
 
