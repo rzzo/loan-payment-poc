@@ -1,27 +1,61 @@
-# LoanPayment
+# Loan Payment Application UI Exercise
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.2.
+## Introduction
 
-## Development server
+Thank you for considering my submission for the UI exercise as part of the application process at OneMain. This project showcases a modern approach to the typical online payment form, emphasizing a clean, user-friendly design and innovative features to enhance efficiency and usability.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Design Philosophy
 
-## Code scaffolding
+In alignment with discussions with the recruiters, I ventured beyond the initial design specifications to explore a minimalist and contemporary aesthetic. This creative direction was chosen to inject a fresh perspective into the project and highlight the potential for design innovation in enhancing user experience.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- **Minimalist and Modern Design**: Prioritizes clarity, usability, and aesthetic appeal, ensuring a seamless experience for users.
+- **OCR Automation for Form Inputs**: Utilizes [Tesseract.js](https://github.com/naptha/tesseract.js#tesseractjs) to extract payment information from images of mock checks and debit cards. This proof of concept (POC) aims to streamline data entry processes and showcase the application's potential for real-world scenarios.
+- **Angular 17.2 Integration**: Demonstrates the effective use of the latest Angular features to build dynamic, responsive web applications.
 
-## Build
+## Running the Application Locally
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+To explore the application:
 
-## Running unit tests
+1. **Install `http-server`** (if not previously installed):
+   ```sh
+   npm install http-server -g
+   ```
+2. **Navigate to the project directory**:
+   ```sh
+   cd path/to/project
+   ```
+3. **Serve the application**:
+   ```sh
+   http-server dist/loan-payment/browser
+   ```
+4. **Access the application** at [http://localhost:8080/](http://localhost:8080/).
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Testing OCR Automation
 
-## Running end-to-end tests
+The application's OCR functionality can be tested using two provided images: `check.jpg` and `debit.jpg`, found in the project root.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Steps:
 
-## Further help
+- **For `check.jpg`**: Use the designated upload button to select `check.jpg` and observe the automatic population of routing and account numbers.
+- **For `debit.jpg`**: After switching to the debit card payment method, upload `debit.jpg` to auto-fill the card number and expiration date.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Expected Outcomes:
+
+- **Check Processing**: Routing and account numbers are extracted and filled automatically.
+- **Debit Card Processing**: Card number and expiration date are recognized and populated into the respective form fields.
+
+This feature is designed as a POC to illustrate how OCR technology can minimize manual input and enhance the user experience.
+
+## Project Considerations
+
+This submission aims to balance adherence to the provided design specifications with the exploration of new design and technology possibilities. It is my hope that this project will serve as a basis for discussing:
+
+- **Design Innovation**: The rationale behind the design updates and their potential impact.
+- **Technical Feasibility**: The implementation of OCR as a tool for improving form interaction.
+- **Angular's Latest Features**: How Angular 17.2 can be leveraged to create efficient, scalable web applications.
+
+I look forward to your feedback and the opportunity to discuss how these elements can contribute to the team at OneMain.
+
+---
+
+This README.md is structured to give a comprehensive overview of your project, its objectives, and instructions for both running and evaluating its features. Feel free to adjust any section to better match the specifics of your project or personal style.
