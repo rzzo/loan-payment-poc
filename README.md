@@ -14,21 +14,37 @@ In alignment with discussions with the recruiters, I ventured beyond the initial
 
 ## Running the Application Locally
 
-To explore the application:
+To get the application up and running on your local machine, you have two primary methods. Choose the one that best suits your development environment and preferences.
 
-1. **Install `http-server`** (if not previously installed):
-   ```sh
-   npm install http-server -g
-   ```
-2. **Navigate to the project directory**:
+### Method 1: Using `http-server` with `npx`
+
+This method is useful for quickly serving the built version of the application without needing a global package installation.
+
+1. **Navigate to the project directory**:
    ```sh
    cd path/to/project
    ```
-3. **Serve the application**:
+2. **Serve the application using `npx`**:
    ```sh
-   http-server dist/loan-payment/browser
+   npx http-server dist/loan-payment/browser
    ```
-4. **Access the application** at [http://localhost:8080/](http://localhost:8080/).
+3. **Access the application** at [http://localhost:8080/](http://localhost:8080/).
+
+### Method 2: Using Angular CLI (`ng serve`)
+
+For a development environment with live reloading and more Angular-specific features, follow these steps:
+
+1. **Install project dependencies**:
+   ```sh
+   npm install
+   ```
+2. **Serve the application using Angular CLI**:
+   ```sh
+   ng serve
+   ```
+3. **Access the application** typically at [http://localhost:4200/](http://localhost:4200/). The Angular CLI will indicate the exact address once the project has compiled successfully.
+
+This second method is particularly recommended during development for its live reloading capabilities, making it easier to see changes in real-time without manually refreshing your browser.
 
 ## Testing OCR Automation
 
