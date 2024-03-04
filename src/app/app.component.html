@@ -5,7 +5,7 @@
 	<div class="loan-wrapper">
 		<div class="left">
 			<form [formGroup]="form" (ngSubmit)="onSubmit()">
-				<div class="control cf">
+				<div class="control loan">
 					<label for="loanAccountNumber">Loan Account Number</label>
 					<input [attr.aria-invalid]="shouldDisplayError('loanAccountNumber', 'numbersOnly') ? true : null" type="text"
 						formControlName="loanAccountNumber">
@@ -31,25 +31,32 @@
 						</button>
 						Auto fill with your {{typeOfPicture}}
 					</div>
-					<small>*use the included "check.jpg"</small>
+					<small>*For demo, use the included "check.jpg" or "debit.jpg"</small>
 
 					@if(imageSrc) {
-					<img [src]="imageSrc" alt="image preview">
+					<img class="upload" [src]="imageSrc" alt="image preview">
 					}
 
 					@if(activeMethod() === 'check') {
 
 					<div class="control" *ngIf="form.get('routingNumber')">
-						<label for="routingNumber">Routing Number</label>
-						<input [attr.aria-invalid]="shouldDisplayError('routingNumber', 'numbersOnly') ? true : null" type="text"
-							formControlName="routingNumber">
-						<div class="invalid" *ngIf="shouldDisplayError('routingNumber', 'numbersOnly')">
-							Please enter numbers only.
+						<div>
+							<label for="routingNumber">Routing Number</label>
+							<span class="help" (click)="openExplainerDialog()">Where can I find this?</span>
+						</div>
+						<input
+							[attr.aria-invalid]="form.get('routingNumber')?.errors?.['routingNumberInvalid'] && form.get('routingNumber')?.touched"
+							type="text" formControlName="routingNumber">
+						<div class="invalid"
+							*ngIf="form.get('routingNumber')?.errors?.['routingNumberInvalid'] && form.get('routingNumber')?.touched">
+							Routing number must be no more than 9 numbers.
 						</div>
 					</div>
 
 					<div class="control" *ngIf="form.get('accountNumber')">
-						<label for="accountNumber">Account Number</label>
+						<label for="accountNumber">Account Number
+							<span class="help" (click)="openExplainerDialog()">Where can I find this?</span>
+						</label>
 						<input [attr.aria-invalid]="shouldDisplayError('accountNumber', 'numbersOnly') ? true : null"
 							formControlName="accountNumber">
 						<div class="invalid" invalid *ngIf="shouldDisplayError('accountNumber', 'numbersOnly')">
@@ -80,7 +87,7 @@
 						<input
 							[attr.aria-invalid]="form.get('cardNumber')?.invalid && form.get('cardNumber')?.touched ? true : null"
 							type="text" formControlName="cardNumber">
-						<div *ngIf="form.get('cardNumber')?.errors?.['numbersOnly'] && form.get('cardNumber')?.touched">
+						<div class="invalid" invalid *ngIf="shouldDisplayError('cardNumber', 'numbersOnly')">
 							Please enter numbers only.
 						</div>
 					</div>
@@ -90,7 +97,8 @@
 						<input
 							[attr.aria-invalid]="form.get('nameOnCard')?.invalid && form.get('nameOnCard')?.touched ? true : null"
 							type="text" formControlName="nameOnCard">
-						<div *ngIf="form.get('nameOnCard')?.errors?.['required'] && form.get('nameOnCard')?.touched">
+						<div class="invalid"
+							*ngIf="form.get('nameOnCard')?.errors?.['required'] && form.get('nameOnCard')?.touched">
 							This field is required.
 						</div>
 					</div>
@@ -100,7 +108,8 @@
 						<input
 							[attr.aria-invalid]="form.get('expirationDate')?.invalid && form.get('expirationDate')?.touched ? true : null"
 							type="text" formControlName="expirationDate">
-						<div *ngIf="form.get('expirationDate')?.errors?.['required'] && form.get('expirationDate')?.touched">
+						<div class="invalid"
+							*ngIf="form.get('expirationDate')?.errors?.['required'] && form.get('expirationDate')?.touched">
 							This field is required.
 						</div>
 					</div>
@@ -109,8 +118,8 @@
 						<label for="cvv">CVV</label>
 						<input [attr.aria-invalid]="form.get('cvv')?.invalid && form.get('cvv')?.touched ? true : null" type="text"
 							formControlName="cvv">
-						<div *ngIf="form.get('cvv')?.errors?.['numbersOnly'] && form.get('cvv')?.touched">
-							Please enter numbers only.
+						<div class="invalid" *ngIf="form.get('cvv')?.errors?.['cvvInvalid'] && form.get('cvv')?.touched">
+							CVV must be exactly 3 numbers.
 						</div>
 					</div>
 					}
@@ -122,23 +131,26 @@
 			</form>
 		</div>
 
-		<div class="right">
-			@if(activeMethod() === 'check') {
-			check
-			}
-
-			@if(activeMethod() === 'debit') {
-			debit
-			}
-		</div>
 	</div>
 </div>
 
 
-<dialog id="confirmationDialog">
+<dialog id="confirmationDialog" #confirmationDialog>
 	<h2>Form Submission Confirmation</h2>
 	<p>Your info has been submitted to a secure backend!</p>
 	<small>*We hope</small>
 	<pre>{{form.value| json}}</pre>
-	<button (click)="closeDialog()">Good bye</button>
+	<button (click)="closeDialog()">Thanks!</button>
+</dialog>
+
+
+<dialog id="explainer" #explainerDialog>
+	@if(activeMethod() === 'check') {
+	<img class="echeck" src="/assets/SVG/explainer-check.svg" alt="">
+	}
+
+	@if(activeMethod() === 'debit') {
+
+	}
+	<button (click)="closeExplainerDialog()">Thanks!</button>
 </dialog>

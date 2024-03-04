@@ -14,3 +14,13 @@ export const numbersOnlyValidator: ValidatorFn = (control: AbstractControl): Val
 	const isValid = /^[0-9]*$/.test(control.value);
 	return isValid ? null : { numbersOnly: true };
 };
+
+export const cvvValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+	const isValid = /^\d{3}$/.test(control.value);
+	return isValid ? null : { cvvInvalid: true };
+};
+
+export const routingNumberValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+	const isValid = /^\d{1,9}$/.test(control.value);
+	return isValid ? null : { routingNumberInvalid: true };
+};

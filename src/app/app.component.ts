@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild, effect, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OcrService } from './services/ocr-service.service';
-import { accountNumberMatchValidator, numbersOnlyValidator } from './validators/validators';
+import { accountNumberMatchValidator, cvvValidator, numbersOnlyValidator, routingNumberValidator } from './validators/validators';
 
 type Method = 'check' | 'debit';
 
@@ -36,6 +36,9 @@ export class AppComponent implements OnInit {
 	@ViewChild('fileInput') fileInput!: ElementRef;
 	typeOfPicture: string = 'Check';
 
+	@ViewChild('confirmationDialog') dialog!: ElementRef<HTMLDialogElement>;
+	@ViewChild('explainerDialog') explainerDialog!: ElementRef<HTMLDialogElement>;
+
 	private ocrService = inject(OcrService);
 	form!: FormGroup;
 	imageSrc: string | ArrayBuffer | null = null;
@@ -44,14 +47,6 @@ export class AppComponent implements OnInit {
 		this.form = new FormGroup({
 			loanAccountNumber: new FormControl('', [Validators.required, numbersOnlyValidator])
 		}, { validators: accountNumberMatchValidator });
-
-		// this.form = new FormGroup({
-		// 	loanAccountNumber: new FormControl('', [Validators.required, numbersOnlyValidator]),
-		// 	routingNumber: new FormControl('', [Validators.required, numbersOnlyValidator]),
-		// 	accountNumber: new FormControl('', [Validators.required, numbersOnlyValidator]),
-		// 	confirmAccountNumber: new FormControl('', [Validators.required]),
-		// }, { validators: accountNumberMatchValidator });
-
 	}
 
 	onFileChanged(event: Event): void {
@@ -61,11 +56,11 @@ export class AppComponent implements OnInit {
 
 			reader.onload = (e) => {
 				if (e.target?.result) {
-					this.imageSrc = e.target.result; // Assign the result to imageSrc
+					this.imageSrc = e.target.result;
 				}
 			};
 
-			reader.readAsDataURL(file); // Read the file as a data URL
+			reader.readAsDataURL(file);
 
 			this.ocrService.recognizeImage(file).subscribe({
 				next: (text) => {
@@ -78,21 +73,40 @@ export class AppComponent implements OnInit {
 
 
 	extractAndPopulateForm(ocrText: string): void {
+		if (this.activeMethod() === 'check') {
 
-		const matches = ocrText.match(/\b\d{8,12}\b/g);
+			const matches = ocrText.match(/\b\d{8,12}\b/g);
 
-		if (matches && matches.length >= 2) {
-			// This is a simple match built for my fake check (check.jpg)
-			// This is for POC purposes only
-			this.form.patchValue({
-				routingNumber: matches[0],
-				accountNumber: matches[1],
-				confirmAccountNumber: matches[1]
-			});
-		} else if (matches && matches.length === 1) {
-			this.form.patchValue({
-				routingNumber: matches[0]
-			});
+			if (matches && matches.length >= 2) {
+				// This is a simple match built for my fake check (check.jpg)
+				// This is for POC purposes only
+				this.form.patchValue({
+					routingNumber: matches[0],
+					accountNumber: matches[1],
+					confirmAccountNumber: matches[1]
+				});
+			} else if (matches && matches.length === 1) {
+				this.form.patchValue({
+					routingNumber: matches[0]
+				});
+			}
+		} else if (this.activeMethod() === 'debit') {
+			const cardNumberMatch = ocrText.match(/(\d{8})\s*(\d{8})/);
+
+			const expiryDateMatch = ocrText.match(/\b\d{2}\/\d{2}\b/);
+
+			const formValue: any = {};
+
+			if (cardNumberMatch) {
+				// Concatenate the matched groups to form the card number
+				formValue.cardNumber = `${cardNumberMatch[1]}${cardNumberMatch[2]}`;
+			}
+
+			if (expiryDateMatch) {
+				formValue.expirationDate = expiryDateMatch[0];
+			}
+
+			this.form.patchValue(formValue);
 		}
 	}
 
@@ -106,14 +120,14 @@ export class AppComponent implements OnInit {
 	}
 
 	openDialog(): void {
-		const dialog: HTMLDialogElement | null = document.querySelector('dialog#confirmationDialog');
+		const dialog = this.dialog.nativeElement;
 		if (dialog) {
 			dialog.showModal();
 		}
 	}
 
 	closeDialog(): void {
-		const dialog: HTMLDialogElement | null = document.querySelector('dialog#confirmationDialog');
+		const dialog = this.dialog.nativeElement;
 		if (dialog) {
 			dialog.close();
 		}
@@ -134,21 +148,19 @@ export class AppComponent implements OnInit {
 
 		// Check which payment method is selected and add relevant form controls
 		if (paymentMethod === 'check') {
-			this.form.addControl('routingNumber', new FormControl('', [Validators.required, numbersOnlyValidator]));
+			this.form.addControl('routingNumber', new FormControl('', [Validators.required, routingNumberValidator]));
 			this.form.addControl('accountNumber', new FormControl('', [Validators.required, numbersOnlyValidator]));
 			this.form.addControl('confirmAccountNumber', new FormControl('', [Validators.required, numbersOnlyValidator]));
 			this.form.setValidators(accountNumberMatchValidator);
 		} else if (paymentMethod === 'debit') {
 			this.form.addControl('cardNumber', new FormControl('', [Validators.required, numbersOnlyValidator]));
 			this.form.addControl('expirationDate', new FormControl('', [Validators.required]));
-			this.form.addControl('cvv', new FormControl('', [Validators.required, numbersOnlyValidator]));
+			this.form.addControl('cvv', new FormControl('', [Validators.required, cvvValidator]));
 			this.form.addControl('nameOnCard', new FormControl('', [Validators.required]));
 
-			// Reset custom validators if they were set for the check payment method
 			this.form.setValidators(null);
 		}
 
-		// Call updateValueAndValidity to re-evaluate the form status
 		this.form.updateValueAndValidity();
 	}
 
@@ -164,6 +176,21 @@ export class AppComponent implements OnInit {
 	shouldDisplayError(controlName: string, errorType: string): boolean {
 		const control = this.form.get(controlName);
 		return (control?.touched && control?.hasError(errorType)) ?? false;
+	}
+
+	openExplainerDialog(): void {
+		const explainerDialog = this.explainerDialog.nativeElement;
+		if (explainerDialog) {
+			explainerDialog.showModal();
+		}
+	}
+
+	closeExplainerDialog(): void {
+		const explainerDialog = this.explainerDialog.nativeElement;
+
+		if (explainerDialog) {
+			explainerDialog.close();
+		}
 	}
 
 }
